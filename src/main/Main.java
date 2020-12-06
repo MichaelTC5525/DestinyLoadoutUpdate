@@ -11,6 +11,6 @@ public class Main {
             System.out.println(args[i]);
         }
 
-        ArgReader argReader = new ArgReader();
+        ArgReader argReader = new ArgReader(args);
     }
 }
