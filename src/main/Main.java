@@ -1,5 +1,6 @@
 package main;
 
+import main.data.LoadoutStatistics;
 import main.util.ArgReader;
 import main.util.PageDataParser;
 import main.util.WebpageReader;
@@ -29,6 +30,25 @@ public class Main {
         String pageData = webpageReader.readPage();
 
         PageDataParser pageDataParser = new PageDataParser(pageData);
+
+        int[] loadoutStats = pageDataParser.obtainStats();
+
+        LoadoutStatistics loadoutStatistics = LoadoutStatistics.builder()
+                .maxKinetic(loadoutStats[0])
+                .maxEnergy(loadoutStats[1])
+                .maxHeavy(loadoutStats[2])
+                .maxHelmet(loadoutStats[3])
+                .maxGauntlet(loadoutStats[4])
+                .maxChest(loadoutStats[5])
+                .maxLeg(loadoutStats[6])
+                .maxClassItem(loadoutStats[7])
+                .currPowerLvl(loadoutStats[8])
+                .build();
+
+        for (int i : loadoutStats) {
+            System.out.println(i);
+        }
+
 
 
     }
