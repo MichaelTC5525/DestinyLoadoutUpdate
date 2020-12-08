@@ -20,14 +20,6 @@ public class ArgReader {
 
     private String accountName;
     private String guardianClass;
-    private int maxKinetic;
-    private int maxEnergy;
-    private int maxHeavy;
-    private int maxHelmet;
-    private int maxGauntlet;
-    private int maxChest;
-    private int maxLeg;
-    private int maxClassItem;
 
     public ArgReader(String[] args) {
         boolean valid = checkValidParams(Arrays.asList(args));
@@ -39,7 +31,7 @@ public class ArgReader {
             for (int i = 0; i < args.length; i++) {
                 switch(args[i]) {
                     case "-acc":
-                    case "--acountName":
+                    case "--accountName":
                         accountName = args[i+1];
                         break;
                     case "-T":
