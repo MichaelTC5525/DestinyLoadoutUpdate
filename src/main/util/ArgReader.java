@@ -31,7 +31,7 @@ public class ArgReader {
             for (int i = 0; i < args.length; i++) {
                 switch(args[i]) {
                     case "-acc":
-                    case "--acountName":
+                    case "--accountName":
                         accountName = args[i+1];
                         break;
                     case "-T":
