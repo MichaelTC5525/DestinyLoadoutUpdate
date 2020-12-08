@@ -10,7 +10,6 @@ public class PageDataParser {
 
     public int[] obtainStats() {
         //Parse through html data to find loadout numbers
-        System.out.println(data);
 
         //Based on manual checks, we notice that this sequence appears after each desired value we wish to extract
         String identifySeq = "</div></div></div></a>";

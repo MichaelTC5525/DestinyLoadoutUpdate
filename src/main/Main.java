@@ -33,6 +33,7 @@ public class Main {
 
         int[] loadoutStats = pageDataParser.obtainStats();
 
+
         LoadoutStatistics loadoutStatistics = LoadoutStatistics.builder()
                 .maxKinetic(loadoutStats[0])
                 .maxEnergy(loadoutStats[1])
@@ -45,8 +46,13 @@ public class Main {
                 .currPowerLvl(loadoutStats[8])
                 .build();
 
-        for (int i : loadoutStats) {
-            System.out.println(i);
+        System.out.println("Statistics successfully obtained, read values are as follows...");
+
+        String[] desc = new String[]{"Kinetic", "Energy", "Heavy",
+                                     "Helmet", "Gauntlet", "Chest", "Leg", "ClassItem",
+                                     "Total Power"};
+        for (int i = 0; i < 9; i++) {
+            System.out.println(desc[i] + ": " + loadoutStats[i]);
         }
 
 
