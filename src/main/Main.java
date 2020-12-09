@@ -1,9 +1,10 @@
 package main;
 
 import main.data.LoadoutStatistics;
+import main.external.SQLReader;
 import main.util.ArgReader;
 import main.util.PageDataParser;
-import main.util.WebpageReader;
+import main.external.WebpageReader;
 
 import java.io.IOException;
 
@@ -54,6 +55,10 @@ public class Main {
         for (int i = 0; i < 9; i++) {
             System.out.println(desc[i] + ": " + loadoutStats[i]);
         }
+
+        SQLReader sqlReader = new SQLReader("localhost", "DestinyInfo", true);
+
+        //Statement stmt = con.createStatement();
 
 
 
