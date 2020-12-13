@@ -1,8 +1,10 @@
 package main.external;
 
-import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 public class SQLReader {
 
@@ -23,10 +25,27 @@ public class SQLReader {
         }
     }
 
-    public void initConnection() throws SQLException {
+    public ResultSet runQuery(String query) throws SQLException {
+        Statement stmt;
+
         try {
-            connection = DriverManager.getConnection(connectionString);
+            stmt = connection.createStatement();
         } catch (SQLException e) {
+            System.out.println("Error occurred when creating SQL query");
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
+
+        return stmt.executeQuery(query);
+    }
+
+    public void initConnection() throws SQLException, ClassNotFoundException {
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            String connectionUrl = "jdbc:sqlserver://localhost;database=DestinyInfo;user=data_editor;password=d2infoEQUINOX";
+            connection = DriverManager.getConnection(connectionUrl);
+        } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Connection failed; perhaps connection string is invalid");
             System.out.println(e.getMessage());
             throw e;
