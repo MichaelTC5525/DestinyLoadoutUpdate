@@ -8,7 +8,8 @@ import java.sql.Statement;
 
 public class SQLReader {
 
-    private String connectionString = "Server=localhost;Database=master;Trusted_Connection=True;";
+    private String connectionString = "jdbc:sqlserver://localhost:1433;database=DestinyInfo;" +
+                                        "user=data_editor;password=d2infoEQUINOX;";
     private Connection connection;
 
     public SQLReader() { }
@@ -17,12 +18,9 @@ public class SQLReader {
         this.connectionString = connectionString;
     }
 
-    public SQLReader(String hostname, String databaseName, boolean isTrustedConnection) {
-        if (isTrustedConnection) {
-            connectionString = "Server=" + hostname + ";Database=" + databaseName + ";Trusted_Connection=True;";
-        } else {
-            connectionString = "Server=" + hostname + ";Database=" + databaseName + ";Trusted_Connection=False;";
-        }
+    public SQLReader(String hostname, String databaseName, String user, String password) {
+        connectionString = "jdbc:sqlserver://" + hostname + ":1433;database=" + databaseName + ";user=" + user +
+                ";password=" + password + ";" ;
     }
 
     public ResultSet runQuery(String query) throws SQLException {
@@ -43,8 +41,7 @@ public class SQLReader {
     public void initConnection() throws SQLException, ClassNotFoundException {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-            String connectionUrl = "jdbc:sqlserver://localhost;database=DestinyInfo;user=data_editor;password=d2infoEQUINOX";
-            connection = DriverManager.getConnection(connectionUrl);
+            connection = DriverManager.getConnection(connectionString);
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Connection failed; perhaps connection string is invalid");
             System.out.println(e.getMessage());

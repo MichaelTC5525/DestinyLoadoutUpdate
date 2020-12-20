@@ -1,6 +1,5 @@
 package main;
 
-import main.data.LoadoutStatistics;
 import main.external.SQLReader;
 import main.util.ArgReader;
 import main.util.PageDataParser;
@@ -36,19 +35,6 @@ public class Main {
 
         int[] loadoutStats = pageDataParser.obtainStats();
 
-
-        LoadoutStatistics loadoutStatistics = LoadoutStatistics.builder()
-                .maxKinetic(loadoutStats[0])
-                .maxEnergy(loadoutStats[1])
-                .maxHeavy(loadoutStats[2])
-                .maxHelmet(loadoutStats[3])
-                .maxGauntlet(loadoutStats[4])
-                .maxChest(loadoutStats[5])
-                .maxLeg(loadoutStats[6])
-                .maxClassItem(loadoutStats[7])
-                .currPowerLvl(loadoutStats[8])
-                .build();
-
         System.out.println("Statistics successfully obtained, read values are as follows...");
 
         String[] desc = new String[]{"Kinetic", "Energy", "Heavy",
@@ -58,20 +44,21 @@ public class Main {
             System.out.println(desc[i] + ": " + loadoutStats[i]);
         }
 
-        SQLReader sqlReader = new SQLReader("localhost", "DestinyInfo", true);
+        SQLReader sqlReader = new SQLReader("localhost", "DestinyInfo", "data_editor", "d2infoEQUINOX");
 
-        ResultSet rs = null;
+        ResultSet rs;
 
         try {
             sqlReader.initConnection();
             rs = sqlReader.runQuery("SELECT * FROM dbo.PlayerLoadouts");
+            System.out.println(rs.getInt("MaxWpn1"));
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
             sqlReader.closeConnection();
         }
 
-        System.out.println(rs.getInt("MaxWpn1"));
+
 
 
 
