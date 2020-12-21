@@ -33,6 +33,8 @@ public class Main {
 
         PageDataParser pageDataParser = new PageDataParser(pageData);
 
+        //Indexes 0-2 contain weapon slots; indexes 3-7 contain armour loadout pieces; final index contains Power Level
+        // including artifact bonus
         int[] loadoutStats = pageDataParser.obtainStats();
 
         System.out.println("Statistics successfully obtained, read values are as follows...");
@@ -50,8 +52,12 @@ public class Main {
 
         try {
             sqlReader.initConnection();
-            rs = sqlReader.runQuery("SELECT * FROM dbo.PlayerLoadouts");
-            System.out.println(rs.getInt("MaxWpn1"));
+            rs = sqlReader.runQuery("SELECT * FROM dbo.PlayerLoadouts WHERE PSName = '" + accName +
+                    "' AND GuardianClass = '" + guardianClass + "';");
+
+            //Step into the row of interest
+            rs.next();
+            System.out.println(rs.getString("PSName"));
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
