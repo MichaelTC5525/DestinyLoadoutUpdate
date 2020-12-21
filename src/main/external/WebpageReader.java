@@ -1,4 +1,4 @@
-package main.util;
+package main.external;
 
 import java.io.IOException;
 import java.net.MalformedURLException;

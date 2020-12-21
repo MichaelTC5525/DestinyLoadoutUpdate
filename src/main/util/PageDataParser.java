@@ -11,7 +11,7 @@ public class PageDataParser {
     public int[] obtainStats() {
         //Parse through html data to find loadout numbers
 
-        //Based on manual checks, we notice that this sequence appears after each desired value we wish to extract
+        //Based on manual checks, we notice that these patterns / sequences appear near the values we want to extract
         String identifySeq = "</div></div></div></a>";
         String powerLvlIdentifySeq = "<spanclass=\"power-symbol\">&#x2727;</span>";
 
