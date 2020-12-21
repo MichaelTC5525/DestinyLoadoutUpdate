@@ -35,7 +35,7 @@ public class Main {
 
         //Indexes 0-2 contain weapon slots; indexes 3-7 contain armour loadout pieces; final index contains Power Level
         // including artifact bonus
-        int[] loadoutStats = pageDataParser.obtainStats();
+        int[] webpageStats = pageDataParser.obtainStats();
 
         System.out.println("Statistics successfully obtained, read values are as follows...");
 
@@ -43,7 +43,7 @@ public class Main {
                                      "Helmet", "Gauntlet", "Chest", "Leg", "ClassItem",
                                      "Total Power"};
         for (int i = 0; i < 9; i++) {
-            System.out.println(desc[i] + ": " + loadoutStats[i]);
+            System.out.println(desc[i] + ": " + webpageStats[i]);
         }
 
         SQLReader sqlReader = new SQLReader("localhost", "DestinyInfo", "data_editor", "d2infoEQUINOX");
