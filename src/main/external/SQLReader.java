@@ -1,11 +1,14 @@
 package main.external;
 
+import lombok.Getter;
+
 import java.sql.DriverManager;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+@Getter
 public class SQLReader {
 
     private String connectionString = "jdbc:sqlserver://localhost:1433;database=DestinyInfo;" +
