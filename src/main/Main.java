@@ -35,13 +35,12 @@ public class Main {
 
         PageDataParser pageDataParser = new PageDataParser(pageData);
 
-        //Indexes 0-2 contain weapon slots; indexes 3-7 contain armour loadout pieces; final index 8 contains Power
-        // Level including artifact bonus
+        //Indexes 0-2 contain weapon slots; indexes 3-7 contain armour loadout pieces
         int[] webpageStats = pageDataParser.obtainStats();
 
         //Determine current artifact level by what is present; this does not change regardless of whether
         // max loadout is equipped
-        int currArtifactLvl = webpageStats[webpageStats.length - 1] - floorAverageOfArray(webpageStats);
+        int currArtifactLvl = pageDataParser.obtainPowerLevel() - floorAverageOfArray(webpageStats);
 
         System.out.println("Statistics successfully obtained from webpage, continuing to SQL database connection...");
 
@@ -95,9 +94,6 @@ public class Main {
                                                 .maxClassItem(Math.max(webpageStats[7], databaseStats[7]))
                                                 .currArtifactLvl(currArtifactLvl)
                                                 .build();
-
-        String[] desc = new String[]{"Kinetic", "Energy", "Heavy",
-                "Helmet", "Gauntlet", "Chest", "Leg", "ClassItem"};
 
         System.out.println("Comparisons between webpage and database values complete, summary is as follows...");
         System.out.printf("MaxKinetic: Webpage = %d , Database = %d --> Overall = " + loadoutStatistics.getMaxKinetic()
