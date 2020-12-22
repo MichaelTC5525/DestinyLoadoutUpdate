@@ -1,5 +1,6 @@
 package main;
 
+import main.exception.TableRowNotFoundException;
 import main.external.SQLReader;
 import main.util.ArgReader;
 import main.util.PageDataParser;
@@ -33,41 +34,73 @@ public class Main {
 
         PageDataParser pageDataParser = new PageDataParser(pageData);
 
-        //Indexes 0-2 contain weapon slots; indexes 3-7 contain armour loadout pieces; final index contains Power Level
-        // including artifact bonus
+        //Indexes 0-2 contain weapon slots; indexes 3-7 contain armour loadout pieces; final index 8 contains Power
+        // Level including artifact bonus
         int[] webpageStats = pageDataParser.obtainStats();
 
-        System.out.println("Statistics successfully obtained, read values are as follows...");
+        //Determine current artifact level by what is present; this does not change regardless of whether
+        // max loadout is equipped
+        int currArtifactLvl = webpageStats[webpageStats.length - 1] - averageArray(webpageStats);
+
+        System.out.println("Statistics successfully obtained, webpage values are as follows...");
 
         String[] desc = new String[]{"Kinetic", "Energy", "Heavy",
-                                     "Helmet", "Gauntlet", "Chest", "Leg", "ClassItem",
-                                     "Total Power"};
-        for (int i = 0; i < 9; i++) {
+                                     "Helmet", "Gauntlet", "Chest", "Leg", "ClassItem"};
+        for (int i = 0; i < 8; i++) {
             System.out.println(desc[i] + ": " + webpageStats[i]);
         }
+        System.out.println("CurrentArtifactLevel: " + currArtifactLvl);
 
         SQLReader sqlReader = new SQLReader("localhost", "DestinyInfo", "data_editor", "d2infoEQUINOX");
 
         ResultSet rs;
 
+        int[] databaseStats = new int[8];
+
         try {
             sqlReader.initConnection();
+            System.out.println("SQL Server Connection established; extracting database table values for specified " +
+                                "character...");
             rs = sqlReader.runQuery("SELECT * FROM dbo.PlayerLoadouts WHERE PSName = '" + accName +
                     "' AND GuardianClass = '" + guardianClass + "';");
 
-            //Step into the row of interest
-            rs.next();
-            System.out.println(rs.getString("PSName"));
+            //Step into the row of interest; there should only be one row in this set
+            if (!rs.next()) {
+                throw new TableRowNotFoundException("The character assigned to this account was not found in the " +
+                        "table. You may need to initialize values for this character in SSMS.");
+            }
+
+            //Populate int array with info from database; specify columns so we are independent of column order in
+            // database table
+            databaseStats[0] = rs.getInt("MaxWpn1");
+            databaseStats[1] = rs.getInt("MaxWpn2");
+            databaseStats[2] = rs.getInt("MaxWpn3");
+            databaseStats[3] = rs.getInt("MaxHelmet");
+            databaseStats[4] = rs.getInt("MaxArm");
+            databaseStats[5] = rs.getInt("MaxChest");
+            databaseStats[6] = rs.getInt("MaxLeg");
+            databaseStats[7] = rs.getInt("MaxClassItem");
+
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         } finally {
             sqlReader.closeConnection();
         }
 
+        System.out.println("Statistics successfully obtained, database values are as follows...");
+        for (int i = 0; i < 8; i++) {
+            System.out.println(desc[i] + ": " + databaseStats[i]);
+        }
 
+    }
 
+    private static int averageArray(int[] stats) {
+        int total = 0;
+        for (int stat : stats) {
+            total += stat;
+        }
 
-
-
+        //stats.length should never be 0
+        return (int) Math.floor(total / stats.length);
     }
 }
