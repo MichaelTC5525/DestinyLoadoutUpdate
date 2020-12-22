@@ -13,9 +13,8 @@ public class PageDataParser {
 
         //Based on manual checks, we notice that these patterns / sequences appear near the values we want to extract
         String identifySeq = "</div></div></div></a>";
-        String powerLvlIdentifySeq = "<spanclass=\"power-symbol\">&#x2727;</span>";
 
-        int[] stats = new int[9];
+        int[] stats = new int[8];
 
         //Populate integer array with loadout numbers
         int prevIndexOfStatSeq = 0;
@@ -27,11 +26,14 @@ public class PageDataParser {
 
         }
 
-        //Populate end of array with overall power level number
-        int startOfPowerLvlSeq = data.indexOf(powerLvlIdentifySeq) + powerLvlIdentifySeq.length();
-        stats[8] = extractPowerLevelAt(startOfPowerLvlSeq);
-
         return stats;
+    }
+
+    public int obtainPowerLevel() {
+        String powerLvlIdentifySeq = "<spanclass=\"power-symbol\">&#x2727;</span>";
+
+        int startOfPowerLvlSeq = data.indexOf(powerLvlIdentifySeq) + powerLvlIdentifySeq.length();
+        return extractPowerLevelAt(startOfPowerLvlSeq);
     }
 
     private int extractStatLevelAt(int startOfSeq) {

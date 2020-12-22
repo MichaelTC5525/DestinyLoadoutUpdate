@@ -34,7 +34,8 @@ public class PageDataParserTest {
         Assertions.assertEquals(1200, results[5]);
         Assertions.assertEquals(2442, results[6]);
         Assertions.assertEquals(9999, results[7]);
-        Assertions.assertEquals(6372, results[8]);
+
+        Assertions.assertEquals(6372, defaultParser.obtainPowerLevel());
     }
 
     @Test

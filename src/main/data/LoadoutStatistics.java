@@ -15,7 +15,7 @@ public class LoadoutStatistics {
     private int maxChest;
     private int maxLeg;
     private int maxClassItem;
-    private int currPowerLvl;
+    private int currArtifactLvl;
 
 
 }
