@@ -1,5 +1,6 @@
 package main;
 
+import main.data.LoadoutStatistics;
 import main.exception.TableRowNotFoundException;
 import main.external.SQLReader;
 import main.util.ArgReader;
@@ -40,16 +41,9 @@ public class Main {
 
         //Determine current artifact level by what is present; this does not change regardless of whether
         // max loadout is equipped
-        int currArtifactLvl = webpageStats[webpageStats.length - 1] - averageArray(webpageStats);
+        int currArtifactLvl = webpageStats[webpageStats.length - 1] - floorAverageOfArray(webpageStats);
 
-        System.out.println("Statistics successfully obtained, webpage values are as follows...");
-
-        String[] desc = new String[]{"Kinetic", "Energy", "Heavy",
-                                     "Helmet", "Gauntlet", "Chest", "Leg", "ClassItem"};
-        for (int i = 0; i < 8; i++) {
-            System.out.println(desc[i] + ": " + webpageStats[i]);
-        }
-        System.out.println("CurrentArtifactLevel: " + currArtifactLvl);
+        System.out.println("Statistics successfully obtained from webpage, continuing to SQL database connection...");
 
         SQLReader sqlReader = new SQLReader("localhost", "DestinyInfo", "data_editor", "d2infoEQUINOX");
 
@@ -87,14 +81,47 @@ public class Main {
             sqlReader.closeConnection();
         }
 
-        System.out.println("Statistics successfully obtained, database values are as follows...");
-        for (int i = 0; i < 8; i++) {
-            System.out.println(desc[i] + ": " + databaseStats[i]);
-        }
+        System.out.println("Statistics successfully obtained from database, continuing to value comparison...");
+
+        //Create the object that will contain highest values between the two sources
+        LoadoutStatistics loadoutStatistics = LoadoutStatistics.builder()
+                                                .maxKinetic(Math.max(webpageStats[0], databaseStats[0]))
+                                                .maxEnergy(Math.max(webpageStats[1], databaseStats[1]))
+                                                .maxHeavy(Math.max(webpageStats[2], databaseStats[2]))
+                                                .maxHelmet(Math.max(webpageStats[3], databaseStats[3]))
+                                                .maxGauntlet(Math.max(webpageStats[4], databaseStats[4]))
+                                                .maxChest(Math.max(webpageStats[5], databaseStats[5]))
+                                                .maxLeg(Math.max(webpageStats[6], databaseStats[6]))
+                                                .maxClassItem(Math.max(webpageStats[7], databaseStats[7]))
+                                                .currArtifactLvl(currArtifactLvl)
+                                                .build();
+
+        String[] desc = new String[]{"Kinetic", "Energy", "Heavy",
+                "Helmet", "Gauntlet", "Chest", "Leg", "ClassItem"};
+
+        System.out.println("Comparisons between webpage and database values complete, summary is as follows...");
+        System.out.printf("MaxKinetic: Webpage = %d , Database = %d --> Overall = " + loadoutStatistics.getMaxKinetic()
+                + "%n", webpageStats[0], databaseStats[0]);
+        System.out.printf("MaxEnergy: Webpage = %d , Database = %d --> Overall = " + loadoutStatistics.getMaxEnergy()
+                + "%n", webpageStats[1], databaseStats[1]);
+        System.out.printf("MaxHeavy: Webpage = %d , Database = %d --> Overall = " + loadoutStatistics.getMaxHeavy()
+                + "%n", webpageStats[2], databaseStats[2]);
+        System.out.printf("MaxHelmet: Webpage = %d , Database = %d --> Overall = " + loadoutStatistics.getMaxHelmet()
+                + "%n", webpageStats[3], databaseStats[3]);
+        System.out.printf("MaxArm: Webpage = %d , Database = %d --> Overall = " + loadoutStatistics.getMaxGauntlet()
+                + "%n", webpageStats[4], databaseStats[4]);
+        System.out.printf("MaxChest: Webpage = %d , Database = %d --> Overall = " + loadoutStatistics.getMaxChest()
+                + "%n", webpageStats[5], databaseStats[5]);
+        System.out.printf("MaxLeg: Webpage = %d , Database = %d --> Overall = " + loadoutStatistics.getMaxLeg()
+                + "%n", webpageStats[6], databaseStats[6]);
+        System.out.printf("MaxClassItem: Webpage = %d , Database = %d --> Overall = " + loadoutStatistics.getMaxClassItem()
+                + "%n", webpageStats[7], databaseStats[7]);
+        System.out.println("CurrentArtifactLevel: " + loadoutStatistics.getCurrArtifactLvl());
+
 
     }
 
-    private static int averageArray(int[] stats) {
+    private static int floorAverageOfArray(int[] stats) {
         int total = 0;
         for (int stat : stats) {
             total += stat;
