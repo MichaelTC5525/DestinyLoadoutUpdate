@@ -13,6 +13,8 @@ public class SQLReader {
 
     private String connectionString = "jdbc:sqlserver://localhost:1433;database=DestinyInfo;" +
                                         "user=data_editor;password=d2infoEQUINOX;";
+
+    private Statement stmt;
     private Connection connection;
 
     public SQLReader() { }
@@ -26,25 +28,19 @@ public class SQLReader {
                 ";password=" + password + ";" ;
     }
 
-    public ResultSet runQuery(String query) throws SQLException {
-        Statement stmt;
-
-        try {
-            stmt = connection.createStatement();
-        } catch (SQLException e) {
-            System.out.println("Error occurred when creating SQL query");
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-            throw e;
-        }
-
+    public ResultSet runExtractQuery(String query) throws SQLException {
         return stmt.executeQuery(query);
+    }
+
+    public void runQuery(String query) throws SQLException {
+        stmt.execute(query);
     }
 
     public void initConnection() throws SQLException, ClassNotFoundException {
         try {
             Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
             connection = DriverManager.getConnection(connectionString);
+            stmt = connection.createStatement();
         } catch (SQLException | ClassNotFoundException e) {
             System.out.println("Connection failed; perhaps connection string is invalid");
             System.out.println(e.getMessage());

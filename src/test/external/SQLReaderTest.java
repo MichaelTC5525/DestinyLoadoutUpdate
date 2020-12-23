@@ -45,7 +45,7 @@ public class SQLReaderTest {
     public void testSuccessfulConnectionAndReceiveResultSet() {
         try {
             defaultReader.initConnection();
-            ResultSet rs = defaultReader.runQuery("SELECT * FROM dbo.PlayerLoadouts;");
+            ResultSet rs = defaultReader.runExtractQuery("SELECT * FROM dbo.PlayerLoadouts;");
             Assertions.assertNotNull(rs);
             defaultReader.closeConnection();
         } catch (SQLException | ClassNotFoundException e) {

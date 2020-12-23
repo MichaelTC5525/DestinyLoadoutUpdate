@@ -15,7 +15,7 @@ import java.sql.SQLException;
 // and create a block in the switch statement in WebpageReader with their appropriate ID numbers
 public class Main {
 
-    public static void main(String[] args) throws IOException, SQLException {
+    public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
         System.out.println("Program starting. Fetching command line parameters...");
 
         ArgReader argReader = new ArgReader(args);
@@ -54,7 +54,7 @@ public class Main {
             sqlReader.initConnection();
             System.out.println("SQL Server Connection established; extracting database table values for specified " +
                                 "character...");
-            rs = sqlReader.runQuery("SELECT * FROM dbo.PlayerLoadouts WHERE PSName = '" + accName +
+            rs = sqlReader.runExtractQuery("SELECT * FROM dbo.PlayerLoadouts WHERE PSName = '" + accName +
                     "' AND GuardianClass = '" + guardianClass + "';");
 
             //Step into the row of interest; there should only be one row in this set
@@ -114,7 +114,35 @@ public class Main {
                 + "%n", webpageStats[7], databaseStats[7]);
         System.out.println("CurrentArtifactLevel: " + loadoutStatistics.getCurrArtifactLvl());
 
+        try {
+            sqlReader.initConnection();
+            System.out.println("New SQL Connection established; updating values in database table...");
 
+            sqlReader.runQuery("UPDATE dbo.PlayerLoadouts " +
+                                "SET MaxWpn1 = " + loadoutStatistics.getMaxKinetic() + "," +
+                                "MaxWpn2 = " + loadoutStatistics.getMaxEnergy() + "," +
+                                "MaxWpn3 = " + loadoutStatistics.getMaxHeavy() + "," +
+                                "CurrArtifactLvl = " + loadoutStatistics.getCurrArtifactLvl() + " " +
+                                "WHERE PSName = '" + accName + "'");
+
+            sqlReader.runQuery("UPDATE dbo.PlayerLoadouts " +
+                                "SET MaxHelmet = " + loadoutStatistics.getMaxHelmet() + "," +
+                                "MaxArm = " + loadoutStatistics.getMaxGauntlet() + "," +
+                                "MaxChest = " + loadoutStatistics.getMaxChest() + "," +
+                                "MaxLeg = " + loadoutStatistics.getMaxLeg() + "," +
+                                "MaxClassItem = " + loadoutStatistics.getMaxClassItem() + " " +
+                                "WHERE PSName = '" + accName + "' AND GuardianClass = '" + guardianClass + "'");
+
+            System.out.println("Database values have been updated. Confirm these changes in SSMS if necessary.");
+        } catch (SQLException | ClassNotFoundException e) {
+            e.printStackTrace();
+            throw e;
+        } finally {
+            sqlReader.closeConnection();
+        }
+
+        System.out.println("DestinyLoadoutUpdate process completed for the " + guardianClass + " character belonging" +
+                " to account " + accName);
     }
 
     private static int floorAverageOfArray(int[] stats) {
