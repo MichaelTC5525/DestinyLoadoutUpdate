@@ -9,32 +9,34 @@ public class PageDataParser {
     }
 
     public int[] obtainStats() {
-        //Parse through html data to find loadout numbers
+        //Parse through html data to find loadout numbers; data must contain 8 stat levels and 1 overall power level
 
         //Based on manual checks, we notice that these patterns / sequences appear near the values we want to extract
         String identifySeq = "</div></div></div></a>";
-        String powerLvlIdentifySeq = "<spanclass=\"power-symbol\">&#x2727;</span>";
 
-        int[] stats = new int[9];
+        int[] stats = new int[8];
 
         //Populate integer array with loadout numbers
         int prevIndexOfStatSeq = 0;
         for (int i = 0; i < 8; i++) {
             int startOfStatSeq = data.indexOf(identifySeq, prevIndexOfStatSeq);
 
-            stats[i] = extractStatLevel(startOfStatSeq);
+            stats[i] = extractStatLevelAt(startOfStatSeq);
             prevIndexOfStatSeq = startOfStatSeq + identifySeq.length();
 
         }
 
-        //Populate end of array with overall power level number
-        int startOfPowerLvlSeq = data.indexOf(powerLvlIdentifySeq) + powerLvlIdentifySeq.length();
-        stats[8] = extractPowerLevel(startOfPowerLvlSeq);
-
         return stats;
     }
 
-    private int extractStatLevel(int startOfSeq) {
+    public int obtainPowerLevel() {
+        String powerLvlIdentifySeq = "<spanclass=\"power-symbol\">&#x2727;</span>";
+
+        int startOfPowerLvlSeq = data.indexOf(powerLvlIdentifySeq) + powerLvlIdentifySeq.length();
+        return extractPowerLevelAt(startOfPowerLvlSeq);
+    }
+
+    private int extractStatLevelAt(int startOfSeq) {
         int statLvl = 0;
 
         for (int j = 5; j >= 0; j--) {
@@ -46,7 +48,7 @@ public class PageDataParser {
         return statLvl;
     }
 
-    private int extractPowerLevel(int startOfSeq) {
+    private int extractPowerLevelAt(int startOfSeq) {
         int powerLvl = 0;
 
         for (int k = 5; k >= 0; k--) {
