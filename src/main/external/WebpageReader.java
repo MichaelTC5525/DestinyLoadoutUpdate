@@ -1,5 +1,7 @@
 package main.external;
 
+import main.exception.ProvisioningException;
+
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -130,6 +132,8 @@ public class WebpageReader {
                         break;
                 }
                 break;
+            default:
+                throw new ProvisioningException("The user was not found, they may not be provisioned for this service.");
         }
 
         url = new URL(urlStem + accountID + "/" + charID);

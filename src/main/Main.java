@@ -4,9 +4,12 @@ import main.data.LoadoutStatistics;
 import main.exception.TableRowNotFoundException;
 import main.external.SQLReader;
 import main.util.ArgReader;
+import main.util.IDExtractor;
 import main.util.PageDataParser;
 import main.external.WebpageReader;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,8 +28,17 @@ public class Main {
         String accName = argReader.getAccountName();
         String guardianClass = argReader.getGuardianClass();
 
+        File file = new File(argReader.getIdFilePath());
+
+        String filePathAbs = file.getAbsolutePath();
+
         System.out.println("AccountName: " + accName);
         System.out.println("GuardianClass: " + guardianClass);
+        System.out.println("ID File Path: " + filePathAbs);
+
+        System.out.println("Parsing given file path to determine account and character IDs...");
+
+        IDExtractor idExtractor = new IDExtractor(new FileReader(file));
 
         System.out.println("Submitting information to webpage reader...");
         WebpageReader webpageReader = new WebpageReader(accName, guardianClass);
