@@ -11,6 +11,7 @@ public class IDExtractor {
     }
 
     public long[] extractIDs() {
+
         //TODO
         return new long[2];
     }

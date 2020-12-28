@@ -14,8 +14,9 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-//To add a new player to the provisioned list of accounts, be sure to add them to the accountName list in ArgReader,
-// and create a block in the switch statement in WebpageReader with their appropriate ID numbers
+//To add a new player to the provisioned list of accounts, be sure to add them to a desired text file
+// When running the program, be sure to specify the location of the text file RELATIVE to the .jar executable
+// Include the fileName.txt as part of the file-path parameter
 public class Main {
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
@@ -23,14 +24,14 @@ public class Main {
 
         ArgReader argReader = new ArgReader(args);
 
-        System.out.println("Arguments read. Displaying search parameters.");
+        System.out.println("Arguments read. Displaying parameters...");
 
         String accName = argReader.getAccountName();
         String guardianClass = argReader.getGuardianClass();
 
         File file = new File(argReader.getIdFilePath());
 
-        String filePathAbs = file.getAbsolutePath();
+        String filePathAbs = file.getCanonicalPath();
 
         System.out.println("AccountName: " + accName);
         System.out.println("GuardianClass: " + guardianClass);
@@ -38,7 +39,8 @@ public class Main {
 
         System.out.println("Parsing given file path to determine account and character IDs...");
 
-        IDExtractor idExtractor = new IDExtractor(new FileReader(file));
+        IDExtractor idExtractor = new IDExtractor(new FileReader(file.getCanonicalFile()));
+        long[] idNums = idExtractor.extractIDs();
 
         System.out.println("Submitting information to webpage reader...");
         WebpageReader webpageReader = new WebpageReader(accName, guardianClass);
