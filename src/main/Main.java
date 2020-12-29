@@ -1,16 +1,19 @@
 package main;
 
+import main.data.IDNumbers;
 import main.data.LoadoutStatistics;
-import main.exception.TableRowNotFoundException;
+
 import main.external.SQLReader;
+import main.external.WebpageReader;
 import main.util.ArgReader;
 import main.util.IDExtractor;
 import main.util.PageDataParser;
-import main.external.WebpageReader;
+
+import main.exception.TableRowNotFoundException;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -29,23 +32,27 @@ public class Main {
         String accName = argReader.getAccountName();
         String guardianClass = argReader.getGuardianClass();
 
+        //Create file object so we can use getCanonicalPath() method
         File file = new File(argReader.getIdFilePath());
-
-        String filePathAbs = file.getCanonicalPath();
+        //Allows us to specify a desired file RELATIVE to the executable .jar
+        String resolvedFilePath = file.getCanonicalPath();
 
         System.out.println("AccountName: " + accName);
         System.out.println("GuardianClass: " + guardianClass);
-        System.out.println("ID File Path: " + filePathAbs);
+        System.out.println("ID File Path: " + resolvedFilePath);
 
         System.out.println("Parsing given file path to determine account and character IDs...");
 
-        IDExtractor idExtractor = new IDExtractor(new FileReader(file.getCanonicalFile()));
-        long[] idNums = idExtractor.extractIDs();
+        IDExtractor idExtractor = new IDExtractor(resolvedFilePath);
+        IDNumbers idNums = idExtractor.extractIDs(accName, guardianClass);
 
-        System.out.println("Submitting information to webpage reader...");
-        WebpageReader webpageReader = new WebpageReader(accName, guardianClass);
+        System.out.println("IDs for specified character found. Submitting information to webpage reader...");
+
+        WebpageReader webpageReader = new WebpageReader(idNums.getAccountID(), idNums.getCharID());
 
         String pageData = webpageReader.readPage();
+
+        System.out.println("Webpage successfully read. Beginning parsing process to extract loadout values...");
 
         PageDataParser pageDataParser = new PageDataParser(pageData);
 
