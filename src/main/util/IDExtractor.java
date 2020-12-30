@@ -30,7 +30,8 @@ public class IDExtractor {
                     break;
                 }
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("Array access out of bounds. A line of the ID text file may be malformed.");
+                System.out.println("Array access out of bounds. A line of the ID text file may be malformed or " +
+                        "missing information. Check the lines of the ID providing file for issues...");
                 e.printStackTrace();
                 throw e;
             }
@@ -38,7 +39,8 @@ public class IDExtractor {
 
         if (accId == -1 || charId == -1) {
             throw new ProvisioningException("Could not find ID numbers for the specified character. They may not" +
-                    " be provisioned in the database to be used in this service.");
+                    " be provisioned in the database to be used in this service, or the line for this character in " +
+                    "the file may be missing key info.");
         }
 
         return IDNumbers.builder().accountID(accId).charID(charId).build();
