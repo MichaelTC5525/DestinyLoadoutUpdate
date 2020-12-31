@@ -1,18 +1,25 @@
 package main;
 
+import main.data.IDNumbers;
 import main.data.LoadoutStatistics;
-import main.exception.TableRowNotFoundException;
-import main.external.SQLReader;
-import main.util.ArgReader;
-import main.util.PageDataParser;
-import main.external.WebpageReader;
 
+import main.external.SQLReader;
+import main.external.WebpageReader;
+import main.util.ArgReader;
+import main.util.IDExtractor;
+import main.util.PageDataParser;
+
+import main.exception.TableRowNotFoundException;
+
+import java.io.File;
 import java.io.IOException;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-//To add a new player to the provisioned list of accounts, be sure to add them to the accountName list in ArgReader,
-// and create a block in the switch statement in WebpageReader with their appropriate ID numbers
+//To add a new player to the provisioned list of accounts, be sure to add them to a desired text file
+// When running the program, be sure to specify the location of the text file RELATIVE to the .jar executable
+// Include the fileName.txt as part of the file-path parameter
 public class Main {
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
@@ -20,18 +27,32 @@ public class Main {
 
         ArgReader argReader = new ArgReader(args);
 
-        System.out.println("Arguments read. Displaying search parameters.");
+        System.out.println("Arguments read. Displaying parameters...");
 
         String accName = argReader.getAccountName();
         String guardianClass = argReader.getGuardianClass();
 
+        //Create file object so we can use getCanonicalPath() method
+        File file = new File(argReader.getIdFilePath());
+        //Allows us to specify a desired file RELATIVE to the executable .jar
+        String resolvedFilePath = file.getCanonicalPath();
+
         System.out.println("AccountName: " + accName);
         System.out.println("GuardianClass: " + guardianClass);
+        System.out.println("ID File Path: " + resolvedFilePath);
 
-        System.out.println("Submitting information to webpage reader...");
-        WebpageReader webpageReader = new WebpageReader(accName, guardianClass);
+        System.out.println("Parsing given file path to determine account and character IDs...");
+
+        IDExtractor idExtractor = new IDExtractor(resolvedFilePath);
+        IDNumbers idNums = idExtractor.extractIDs(accName, guardianClass);
+
+        System.out.println("IDs for specified character found. Submitting information to webpage reader...");
+
+        WebpageReader webpageReader = new WebpageReader(idNums.getAccountID(), idNums.getCharID());
 
         String pageData = webpageReader.readPage();
+
+        System.out.println("Webpage successfully read. Beginning parsing process to extract loadout values...");
 
         PageDataParser pageDataParser = new PageDataParser(pageData);
 

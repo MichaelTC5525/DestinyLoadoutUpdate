@@ -4,22 +4,16 @@ import lombok.Getter;
 
 import main.exception.BadOrderException;
 import main.exception.InvalidCommandLineException;
-import main.exception.ProvisioningException;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Getter
 public class ArgReader {
 
-    private final List<String> PROVISIONED_ACCOUNT_NAMES = new ArrayList<>(
-                    Arrays.asList("MGamer5525_Pown", "xoPraedyth", "avareverava", "MechaMosura", "US_Sinister1",
-                                  "bobbyguti", "AshleyJacobson", "TheEndOfAllThing")
-    );
-
     private String accountName;
     private String guardianClass;
+    private String idFilePath;
 
     public ArgReader(String[] args) {
         boolean valid = checkValidParams(Arrays.asList(args));
@@ -43,15 +37,16 @@ public class ArgReader {
                     case "-W":
                         guardianClass = "Warlock";
                         break;
+                    case "-id":
+                    case "--idFilePath":
+                        idFilePath = args[i+1];
+                        break;
+
                 }
             }
         } catch (IndexOutOfBoundsException e) {
-            throw new BadOrderException("Parameters are in a bad order; is the PSName value right after the option?");
-        }
-
-        if (!(PROVISIONED_ACCOUNT_NAMES.contains(accountName))) {
-            throw new ProvisioningException("AccountName: " + accountName + " is not on the list of provisioned " +
-                    "users for this service");
+            throw new BadOrderException("Parameters are in a bad order; is the PSName value right after the option, " +
+                    "and is the path to the accounts file given?");
         }
     }
 
@@ -63,7 +58,8 @@ public class ArgReader {
                 (args.contains("-T") && args.contains("-H")) ||
                 (args.contains("-T") && args.contains("-W")) ||
                 (args.contains("-H") && args.contains("-W")) ||
-                args.size() != 3
+                (!(args.contains("-id")) && !(args.contains("--idFilePath"))) ||
+                args.size() != 5
                 );
     }
 
