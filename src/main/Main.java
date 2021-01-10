@@ -1,18 +1,26 @@
 package main;
 
+import main.data.IDNumbers;
 import main.data.LoadoutStatistics;
-import main.exception.TableRowNotFoundException;
-import main.external.SQLReader;
-import main.util.ArgReader;
-import main.util.PageDataParser;
-import main.external.WebpageReader;
 
+import main.external.SQLReader;
+import main.external.WebpageReader;
+import main.util.ArgReader;
+import main.util.IDExtractor;
+import main.util.PageDataParser;
+
+import main.exception.TableRowNotFoundException;
+
+import java.io.File;
 import java.io.IOException;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Scanner;
 
-//To add a new player to the provisioned list of accounts, be sure to add them to the accountName list in ArgReader,
-// and create a block in the switch statement in WebpageReader with their appropriate ID numbers
+//To add a new player to the provisioned list of accounts, be sure to add them to a desired text file
+// When running the program, be sure to specify the location of the text file RELATIVE to the .jar executable
+// Include the fileName.txt as part of the file-path parameter
 public class Main {
 
     public static void main(String[] args) throws IOException, SQLException, ClassNotFoundException {
@@ -20,18 +28,32 @@ public class Main {
 
         ArgReader argReader = new ArgReader(args);
 
-        System.out.println("Arguments read. Displaying search parameters.");
+        System.out.println("Arguments read. Displaying parameters...");
 
         String accName = argReader.getAccountName();
         String guardianClass = argReader.getGuardianClass();
 
+        //Create file object so we can use getCanonicalPath() method
+        File file = new File(argReader.getIdFilePath());
+        //Allows us to specify a desired file RELATIVE to the executable .jar
+        String resolvedFilePath = file.getCanonicalPath();
+
         System.out.println("AccountName: " + accName);
         System.out.println("GuardianClass: " + guardianClass);
+        System.out.println("ID File Path: " + resolvedFilePath);
 
-        System.out.println("Submitting information to webpage reader...");
-        WebpageReader webpageReader = new WebpageReader(accName, guardianClass);
+        System.out.println("Parsing given file path to determine account and character IDs...");
+
+        IDExtractor idExtractor = new IDExtractor(resolvedFilePath);
+        IDNumbers idNums = idExtractor.extractIDs(accName, guardianClass);
+
+        System.out.println("IDs for specified character found. Submitting information to webpage reader...");
+
+        WebpageReader webpageReader = new WebpageReader(idNums.getAccountID(), idNums.getCharID());
 
         String pageData = webpageReader.readPage();
+
+        System.out.println("Webpage successfully read. Beginning parsing process to extract loadout values...");
 
         PageDataParser pageDataParser = new PageDataParser(pageData);
 
@@ -44,7 +66,33 @@ public class Main {
 
         System.out.println("Statistics successfully obtained from webpage, continuing to SQL database connection...");
 
-        SQLReader sqlReader = new SQLReader("localhost", "DestinyInfo", "data_editor", "d2infoEQUINOX");
+        String[] inputList = new String[5];
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("Requesting details for SQL database connection.");
+        System.out.println("Enter the hostname for the database: ");
+        inputList[0] = input.nextLine();
+
+        System.out.println("Enter the instanceName to connect with. If there is none, submit as blank: ");
+        inputList[1] = input.nextLine();
+
+        System.out.println("Enter the database name to connect with: ");
+        inputList[2] = input.nextLine();
+
+        System.out.println("Enter an authorized username for this connection: ");
+        inputList[3] = input.nextLine();
+
+        System.out.println("Enter the password for this username: ");
+        inputList[4] = input.nextLine();
+
+        System.out.println("Information obtained. Opening database connection...");
+
+        SQLReader sqlReader;
+        if (inputList[1].isEmpty()) {
+            sqlReader = new SQLReader(inputList[0], inputList[2], inputList[3], inputList[4]);
+        } else {
+            sqlReader = new SQLReader(inputList[0], inputList[1], inputList[2], inputList[3], inputList[4]);
+        }
 
         ResultSet rs;
 

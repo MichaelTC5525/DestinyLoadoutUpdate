@@ -11,8 +11,7 @@ import java.sql.Statement;
 @Getter
 public class SQLReader {
 
-    private String connectionString = "jdbc:sqlserver://localhost:1433;database=DestinyInfo;" +
-                                        "user=data_editor;password=d2infoEQUINOX;";
+    private String connectionString;
 
     private Statement stmt;
     private Connection connection;
@@ -26,6 +25,11 @@ public class SQLReader {
     public SQLReader(String hostname, String databaseName, String user, String password) {
         connectionString = "jdbc:sqlserver://" + hostname + ":1433;database=" + databaseName + ";user=" + user +
                 ";password=" + password + ";" ;
+    }
+
+    public SQLReader(String hostname, String instanceName, String databaseName, String user, String password) {
+        connectionString = "jdbc:sqlserver://" + hostname + ":1433;instanceName=" + instanceName + ";database=" +
+                databaseName + ";user=" + user + ";password=" + password + ";" ;
     }
 
     public ResultSet runExtractQuery(String query) throws SQLException {
@@ -42,7 +46,7 @@ public class SQLReader {
             connection = DriverManager.getConnection(connectionString);
             stmt = connection.createStatement();
         } catch (SQLException | ClassNotFoundException e) {
-            System.out.println("Connection failed; perhaps connection string is invalid");
+            System.out.println("Connection failed; perhaps connection information is invalid or incorrect");
             System.out.println(e.getMessage());
             throw e;
         }
