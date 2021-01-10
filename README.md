@@ -29,3 +29,22 @@ This program alone probably won't eliminate the need for me to update things man
 that can come up, but at least I can reduce the whole update process to "Run this .jar on this account on this character".
 
 Special thanks to members of E Q U | N O X for inspiration. See you starside.
+
+This is meant to be used as a command-line interface executable. To run, make sure to specify arguments:
+- Option "-acc" or "--accountName" --> specify the name of the player (screen tag)
+- One of Option "-T", "-H", "-W" --> specify the Guardian Class to search for linked to this account (Titan, Hunter, Warlock)
+- Option "-id" or "--idFilePath" --> specify a path to a text file, relative to the directory in which the jar executable exists, that contains the values for each
+  provisioned accountName's characters; each line should be specified using the following template:
+      - accountName;;;;guardianClassInFull;;;;accountIDValue;;;;charIDValue
+ 
+Currently, this executable works best with accounts that have a single character of each guardian class associated. However, you can arbitrarily specify a player's duplicate
+guardian class characters to be of another guardian class, so long as the accountID and charID still match.
+
+E.g. An account with 2 Titan characters
+- Titan1 --> accountName;;;;Titan;;;;accountID;;;;charID
+- Titan2 --> accountName;;;;Hunter;;;;accountID;;;;charID
+
+In this case, you will simply need to remember that Titan2 has been specified as a "Hunter" class.
+      
+Be sure to know the hostname, instanceName (optional), databaseName, of your SQL database as well as an authorized username and password with which to update its data.
+
