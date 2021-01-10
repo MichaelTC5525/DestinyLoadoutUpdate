@@ -15,21 +15,23 @@ public class SQLReaderTest {
     private SQLReader defaultReader;
     private SQLReader invalidReader;
     private SQLReader customReader;
+    private SQLReader extendedConstructorReader;
 
     @BeforeEach
     public void setup() {
-        defaultReader = new SQLReader();
+        defaultReader = new SQLReader("jdbc:sqlserver://localhost:1433;database=DestinyInfo;user=data_editor;password=d2infoEQUINOX");
         invalidReader = new SQLReader("jdbc:sqlserver://unknownserver");
         customReader = new SQLReader("somehost", "database1", "newUser", "12345");
+        extendedConstructorReader = new SQLReader("newHost", "newInstance", "newDatabase", "aUser", "aPassword");
     }
 
     @Test
     public void testConstructors() {
-        Assertions.assertEquals("jdbc:sqlserver://localhost:1433;database=DestinyInfo;user=data_editor;password=d2infoEQUINOX;",
-                                defaultReader.getConnectionString());
         Assertions.assertEquals("jdbc:sqlserver://unknownserver", invalidReader.getConnectionString());
         Assertions.assertEquals("jdbc:sqlserver://somehost:1433;database=database1;user=newUser;password=12345;",
                                 customReader.getConnectionString());
+        Assertions.assertEquals("jdbc:sqlserver://newHost:1433;instanceName=newInstance;database=newDatabase;user=aUser;password=aPassword;",
+                extendedConstructorReader.getConnectionString());
 
     }
 

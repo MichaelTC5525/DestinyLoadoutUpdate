@@ -16,6 +16,7 @@ import java.io.IOException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Scanner;
 
 //To add a new player to the provisioned list of accounts, be sure to add them to a desired text file
 // When running the program, be sure to specify the location of the text file RELATIVE to the .jar executable
@@ -65,7 +66,33 @@ public class Main {
 
         System.out.println("Statistics successfully obtained from webpage, continuing to SQL database connection...");
 
-        SQLReader sqlReader = new SQLReader("localhost", "DestinyInfo", "data_editor", "d2infoEQUINOX");
+        String[] inputList = new String[5];
+        Scanner input = new Scanner(System.in);
+
+        System.out.println("Requesting details for SQL database connection.");
+        System.out.println("Enter the hostname for the database: ");
+        inputList[0] = input.nextLine();
+
+        System.out.println("Enter the instanceName to connect with. If there is none, submit as blank: ");
+        inputList[1] = input.nextLine();
+
+        System.out.println("Enter the database name to connect with: ");
+        inputList[2] = input.nextLine();
+
+        System.out.println("Enter an authorized username for this connection: ");
+        inputList[3] = input.nextLine();
+
+        System.out.println("Enter the password for this username: ");
+        inputList[4] = input.nextLine();
+
+        System.out.println("Information obtained. Opening database connection...");
+
+        SQLReader sqlReader;
+        if (inputList[1].isEmpty()) {
+            sqlReader = new SQLReader(inputList[0], inputList[2], inputList[3], inputList[4]);
+        } else {
+            sqlReader = new SQLReader(inputList[0], inputList[1], inputList[2], inputList[3], inputList[4]);
+        }
 
         ResultSet rs;
 
