@@ -7,11 +7,11 @@ import java.util.Scanner;
 
 public class WebpageReader {
 
-    private final String urlStem = "https://www.bungie.net/en/Gear/2/";
+    private final String urlStem = "https://www.bungie.net/en/Gear/";
     private URL url;
 
-    public WebpageReader(long accountID, long charID) throws MalformedURLException {
-        url = new URL(urlStem + accountID + "/" + charID);
+    public WebpageReader(long accountID, long charID, int originPlatformCode) throws MalformedURLException {
+        url = new URL(urlStem + originPlatformCode + "/" + accountID + "/" + charID);
     }
 
     public String readPage() throws IOException {
