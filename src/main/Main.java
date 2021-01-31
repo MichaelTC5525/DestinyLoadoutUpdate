@@ -27,15 +27,15 @@ public class Main {
 
         ArgReader argReader = new ArgReader(args);
 
-        System.out.println("Arguments read. Displaying parameters...");
-
-        String accName = argReader.getAccountName();
-        String guardianClass = argReader.getGuardianClass();
-
         //Create file object so we can use getCanonicalPath() method
         File file = new File(argReader.getIdFilePath());
         //Allows us to specify a desired file RELATIVE to the executable .jar
         String resolvedFilePath = file.getCanonicalPath();
+
+        System.out.println("Arguments read. Displaying parameters...");
+
+        String accName = argReader.getAccountName();
+        String guardianClass = argReader.getGuardianClass();
 
         System.out.println("AccountName: " + accName);
         System.out.println("GuardianClass: " + guardianClass);
@@ -48,7 +48,8 @@ public class Main {
 
         System.out.println("IDs for specified character found. Submitting information to webpage reader...");
 
-        WebpageReader webpageReader = new WebpageReader(idNums.getAccountID(), idNums.getCharID());
+        WebpageReader webpageReader = new WebpageReader(idNums.getAccountID(), idNums.getCharID(),
+                                                        argReader.getOriginPlatformCode());
 
         String pageData = webpageReader.readPage();
 
