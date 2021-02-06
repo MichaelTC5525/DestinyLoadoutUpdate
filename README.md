@@ -31,11 +31,11 @@ that can come up, but at least I can reduce the whole update process to "Run thi
 Special thanks to members of E Q U | N O X for inspiration. See you starside.
 
 This is meant to be used as a command-line interface executable. To run, make sure to specify arguments:
-- Option "-acc" or "--accountName" --> specify the name of the player (screen tag)
+- Option "-acc" or "--accountName" --> specify the name of the player (screen tag) directly after the flag
 - One of Option "-T", "-H", "-W" --> specify the Guardian Class to search for linked to this account (Titan, Hunter, Warlock)
-- Option "-id" or "--idFilePath" --> specify a path to a text file, relative to the directory in which the jar executable exists, that contains the values for each
-  provisioned accountName's characters; each line should be specified using the following template:
+- Option "-id" or "--idFilePath" --> specify a path to a text file directly after the flag, relative to the directory in which the jar executable exists, that contains the values for each provisioned accountName's characters; each line should be specified using the following template:
       - accountName;;;;guardianClassInFull;;;;accountIDValue;;;;charIDValue
+- One of Option "-PSN", "-XBL", "-PC", to designate the platform the characters originally were created on (where the cross-save stems from)
  
 Currently, this executable works best with accounts that have a single character of each guardian class associated. However, you can arbitrarily specify a player's duplicate
 guardian class characters to be of another guardian class, so long as the accountID and charID still match.
@@ -48,3 +48,5 @@ In this case, you will simply need to remember that Titan2 has been specified as
       
 Be sure to know the hostname, instanceName (optional), databaseName, of your SQL database as well as an authorized username and password with which to update its data.
 
+This program requires a JDBC Driver in order to operate with the MSSQL Database. 
+- mssql-jdbc-8.4.1.jre8 is the version used in testing this program
