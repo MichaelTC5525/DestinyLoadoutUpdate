@@ -49,4 +49,4 @@ In this case, you will simply need to remember that Titan2 has been specified as
 Be sure to know the hostname, instanceName (optional), databaseName, of your SQL database as well as an authorized username and password with which to update its data.
 
 This program requires a JDBC Driver in order to operate with the MSSQL Database. 
-- mssql-jdbc-8.4.1.jre8 is the version used in testing this program
+- mssql-jdbc-8.4.1.jre8 is the version used in testing this program, placed in the same directory as the DestinyLoadoutUpdate.jar executable file
